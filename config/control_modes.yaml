@@ -1,0 +1,23 @@
+# Supported AS2 control modes for as2_platform_crazyswarm.
+#
+# Each entry is an 8-bit flag packed as:
+#   bits 7-4: control mode
+#   bits 3-2: yaw mode
+#   bits 1-0: reference frame
+#
+# Control modes        Yaw modes          Reference frames
+# ─────────────────    ───────────────    ─────────────────────
+# 0b0000  UNSET        0b00  YAW_ANGLE    0b00  LOCAL_ENU
+# 0b0001  HOVER        0b01  YAW_SPEED    0b01  GLOBAL_ENU
+# 0b0010  ACRO                            0b10  GLOBAL_LLA
+# 0b0011  ATTITUDE
+# 0b0100  SPEED
+# 0b0101  SPEED_IN_A_PLANE
+# 0b0110  POSITION
+# 0b0111  TRAJECTORY
+
+available_modes:
+  - 0b00000000  # UNSET
+  - 0b01000101  # SPEED          | YAW_SPEED | GLOBAL_ENU
+  - 0b01010101  # SPEED_IN_PLANE | YAW_SPEED | GLOBAL_ENU
+  - 0b01100001  # POSITION       | YAW_ANGLE | GLOBAL_ENU

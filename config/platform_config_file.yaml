@@ -1,0 +1,18 @@
+# Platform parameters applied to a single drone node.
+# These can be overridden by swarm_config_file.yaml (/** block) or at launch time.
+
+/**:
+  ros__parameters:
+
+    # Rate at which command setpoints are sent to the Crazyswarm2 server (Hz).
+    cmd_freq: 100.0
+
+    # Rate at which platform info (state, control mode) is published (Hz).
+    info_freq: 10.0
+
+    # Seconds without an odometry message before the drone is declared disconnected.
+    connection_timeout: 1.0
+
+    # Set to true if a Multi-ranger deck is mounted.
+    # Enables the LaserScan subscription and publishes it as an AS2 sensor.
+    multi_ranger_deck: false

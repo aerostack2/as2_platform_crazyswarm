@@ -1,0 +1,32 @@
+# Minimal swarm config template for as2_platform_crazyswarm.
+#
+# In a real project, pass your project's config.yaml as swarm_config_file — it
+# follows the same structure and is shared by all AS2 nodes (state estimator,
+# motion controller, behaviors).  This file is only a standalone fallback for
+# quick tests without a full project setup.
+#
+# The swarm node reads every top-level key that is not /** as a drone namespace.
+# It extracts cf_name (and optionally mocap_id) from each block.
+#
+# cf_name  — Crazyswarm2 robot name; must match a key under robots: in crazyflies.yaml.
+# mocap_id — Rigid-body streaming ID in Motive; only needed when running mocap_bridge.
+
+/**:
+  platform:
+    ros__parameters:
+      cmd_freq: 100.0
+      info_freq: 10.0
+      connection_timeout: 1.0
+      multi_ranger_deck: false
+
+drone0:
+  platform:
+    ros__parameters:
+      cf_name: "cf1"
+      # mocap_id: "34"
+
+# drone1:
+#   platform:
+#     ros__parameters:
+#       cf_name: "cf2"
+#       # mocap_id: "35"
