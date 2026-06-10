@@ -239,7 +239,9 @@ ros2 launch crazyflie launch.py
 
 With mocap (also starts the `mocap_bridge` node):
 ```bash
-ros2 launch <your_project>/launch/crazyswarm_server.launch.py mocap:=true
+ros2 launch as2_platform_crazyswarm crazyswarm_server.launch.py \
+    mocap:=true \
+    mocap_config_file:=/path/to/your/config.yaml
 ```
 
 ### Step 3 — Launch the swarm platform
@@ -255,9 +257,17 @@ One `CrazyswarmPlatform` node is spawned per drone namespace found in `config.ya
 
 ## Motion capture setup
 
-The `mocap_bridge` node translates rigid-body poses from your mocap system into the `/poses` topic that Crazyswarm2 uses to feed each drone's Kalman filter.
+The `mocap_bridge` node is bundled in this package (`as2_platform_crazyswarm`). It translates rigid-body poses from your mocap system into the `/poses` topic that Crazyswarm2 uses to feed each drone's Kalman filter.
 
-It subscribes to `/mocap/rigid_bodies` (`mocap4r2_msgs/RigidBodies`) and republishes on `/poses` (`motion_capture_tracking_interfaces/NamedPoseArray`). At startup it reads `config.yaml`, building a `mocap_id → cf_name` mapping from each drone's `platform.ros__parameters` block. Rigid bodies whose streaming ID is not in the map are forwarded with their original name unchanged.
+It subscribes to `/mocap/rigid_bodies` (`mocap4r2_msgs/RigidBodies`) and republishes on `/poses` (`motion_capture_tracking_interfaces/NamedPoseArray`). At startup it reads the file passed via `mocap_config_file`, building a `mocap_id → cf_name` mapping from each drone's `platform.ros__parameters` block. Rigid bodies whose streaming ID is not in the map are forwarded with their original name unchanged.
+
+Launch it together with the Crazyswarm2 server via `crazyswarm_server.launch.py`:
+
+```bash
+ros2 launch as2_platform_crazyswarm crazyswarm_server.launch.py \
+    mocap:=true \
+    mocap_config_file:=/path/to/your/config.yaml
+```
 
 The `mocap_bridge` must receive poses at 100 Hz or faster — the Crazyswarm2 server subscribes to `/poses` with a 100 Hz QoS deadline.
 
@@ -296,6 +306,16 @@ These parameters live under `<namespace>.platform.ros__parameters` in your `conf
 | `swarm_config_file` | package default | Path to the project `config.yaml` (or any YAML with the same structure) |
 | `control_modes_file` | package default | Path to `control_modes.yaml` |
 | `platform_config_file` | package default | Path to `platform_config_file.yaml` (provides shared defaults) |
+
+### `crazyswarm_server.launch.py` — Crazyswarm2 server (+ optional mocap bridge)
+
+| Argument | Default | Description |
+|---|---|---|
+| `crazyflies_yaml_file` | `config/crazyflies.yaml` | Path to the Crazyswarm2 drone registry YAML |
+| `server_yaml_file` | `config/crazyswarm_server.yaml` | Path to the crazyflie server defaults YAML |
+| `urdf_file` | crazyswarm2 package URDF | Path to the Crazyflie URDF description |
+| `mocap` | `false` | Set to `true` to also launch the `mocap_bridge` node |
+| `mocap_config_file` | `""` | Path to the project `config.yaml` used by `mocap_bridge` to build the `mocap_id → cf_name` mapping. Required when `mocap:=true`. |
 
 ---
 

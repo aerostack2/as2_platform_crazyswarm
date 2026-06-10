@@ -6,6 +6,8 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
 endif()
 
+find_package(ament_cmake_python REQUIRED)
+
 set(PROJECT_DEPENDENCIES
   rclcpp
   sensor_msgs
@@ -64,5 +66,13 @@ install(TARGETS
   ${PROJECT_NAME}_node
   ${PROJECT_NAME}_swarm_node
   DESTINATION lib/${PROJECT_NAME})
+
+ament_python_install_package(${PROJECT_NAME})
+
+install(PROGRAMS
+  as2_platform_crazyswarm/mocap_bridge.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME mocap_bridge
+)
 
 ament_package()

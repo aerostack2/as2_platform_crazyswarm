@@ -10,7 +10,11 @@
   <license>BSD-3-Clause</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
 
+  <depend>rclpy</depend>
+  <depend>mocap4r2_msgs</depend>
+  <depend>motion_capture_tracking_interfaces</depend>
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
   <depend>std_srvs</depend>
