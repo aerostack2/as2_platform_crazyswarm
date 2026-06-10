@@ -25,6 +25,23 @@ For motion-capture setups an external **mocap bridge** node is also required —
 
 ## Requirements
 
+### Minimal ROS 2 package set
+
+The minimum set of ROS 2 packages required to build and run this platform is:
+
+| Package | Source repo | How to get |
+|---|---|---|
+| `crazyflie_server_py` | [Crazyswarm2](https://github.com/IMRCLab/crazyswarm2) | build from source (no apt package) |
+| `crazyflie_interfaces` | [Crazyswarm2](https://github.com/IMRCLab/crazyswarm2) | build from source (no apt package) |
+| `motion_capture_tracking_interfaces` | [motion\_capture\_tracking](https://github.com/IMRCLab/motion_capture_tracking) | build from source (no apt package) |
+| `as2_platform_crazyswarm` | this repo | build from source |
+
+`crazyflie_server_py` and `crazyflie_interfaces` both live inside the [crazyswarm2](https://github.com/IMRCLab/crazyswarm2) repository — clone the whole repo and colcon will build both packages from it. None of these four packages are available via `apt`.
+
+All other items below are either transitive dependencies pulled in by these packages or optional system libraries.
+
+### Full dependency list
+
 | Dependency | Notes |
 |---|---|
 | ROS 2 Humble or later | Tested on Humble |
@@ -74,7 +91,17 @@ Install the Crazyflie Python driver (`cflib`) and `transforms3d`, which are requ
 pip install cflib transforms3d
 ```
 
-### 4. Set up Crazyradio USB permissions
+### 4. Build the required source packages
+
+`crazyflie_interfaces`, `crazyflie_server_py`, and `motion_capture_tracking_interfaces` are not available via `apt` and must be compiled from the repos cloned above:
+
+```bash
+cd ~/crazyflie_ws
+colcon build --packages-select crazyflie_server_py
+source install/setup.bash
+```
+
+### 5. Set up Crazyradio USB permissions
 
 The Crazyradio PA needs a udev rule so it is accessible without root:
 
@@ -87,24 +114,24 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 
 Log out and back in (or run `sudo usermod -aG plugdev $USER`) for the rule to take effect.
 
-### 5. Clone this package
+### 6. Clone this package
 
 ```bash
 cd ~/crazyflie_ws/src
 git clone https://github.com/aerostack2/as2_platform_crazyswarm.git
 ```
 
-### 6. Install remaining system dependencies
+### 7. Install remaining system dependencies
 
 ```bash
 cd ~/crazyflie_ws
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
-### 7. Build
+### 8. Build
 
 ```bash
-colcon build --symlink-install --packages-up-to as2_platform_crazyswarm
+colcon build --packages-up-to as2_platform_crazyswarm
 source install/setup.bash
 ```
 

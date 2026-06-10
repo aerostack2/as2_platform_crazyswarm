@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Bridge: mocap4r2 RigidBodies  →  motion_capture_tracking NamedPoseArray
 
@@ -100,3 +101,7 @@ def main():
     finally:
         node.destroy_node()
         rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
