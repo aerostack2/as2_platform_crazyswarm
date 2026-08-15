@@ -130,13 +130,13 @@ void CrazyswarmPlatform::odomCB(const nav_msgs::msg::Odometry::SharedPtr msg)
   // Remap Crazyswarm2 frame IDs to AS2 frame names
   auto odom_msg = *msg;
   odom_msg.header.frame_id = odom_frame_;
-  odom_msg.child_frame_id  = base_frame_;
+  odom_msg.child_frame_id = base_frame_;
   odom_estimate_ptr_->updateData(odom_msg);
 
   if (!is_connected_) {
     RCLCPP_INFO(this->get_logger(), "Connected to Crazyswarm2 server (%s)", cf_name_.c_str());
   }
-  is_connected_   = true;
+  is_connected_ = true;
   last_odom_time_ = this->get_clock()->now();
 }
 
@@ -144,8 +144,8 @@ void CrazyswarmPlatform::statusCB(const crazyflie_interfaces::msg::Status::Share
 {
   sensor_msgs::msg::BatteryState bat_msg;
   bat_msg.header.stamp = this->get_clock()->now();
-  bat_msg.voltage      = msg->battery_voltage;
-  bat_msg.percentage   = msg->battery_voltage / 4.2f * 100.0f;
+  bat_msg.voltage = msg->battery_voltage;
+  bat_msg.percentage = msg->battery_voltage / 4.2f * 100.0f;
   battery_sensor_ptr_->updateData(bat_msg);
 }
 
@@ -161,11 +161,11 @@ void CrazyswarmPlatform::imuCB(const crazyflie_interfaces::msg::LogDataGeneric::
   // Expected vars order: acc.x, acc.y, acc.z (G), gyro.x, gyro.y, gyro.z (deg/s)
   if (msg->values.size() < 6) {return;}
 
-  static constexpr double G_TO_MS2  = 9.80665;
+  static constexpr double G_TO_MS2 = 9.80665;
   static constexpr double DEG_TO_RAD = M_PI / 180.0;
 
   sensor_msgs::msg::Imu imu_msg;
-  imu_msg.header.stamp    = msg->header.stamp;
+  imu_msg.header.stamp = msg->header.stamp;
   imu_msg.header.frame_id = base_frame_;
 
   imu_msg.linear_acceleration.x = msg->values[0] * G_TO_MS2;
@@ -199,8 +199,8 @@ void CrazyswarmPlatform::connectionCheckCB()
 
 void CrazyswarmPlatform::configureSensors()
 {
-  imu_sensor_ptr_     = std::make_unique<as2::sensors::Imu>("imu", this);
-  odom_estimate_ptr_  =
+  imu_sensor_ptr_ = std::make_unique<as2::sensors::Imu>("imu", this);
+  odom_estimate_ptr_ =
     std::make_unique<as2::sensors::Sensor<nav_msgs::msg::Odometry>>("odom", this);
   battery_sensor_ptr_ =
     std::make_unique<as2::sensors::Sensor<sensor_msgs::msg::BatteryState>>("battery", this);
@@ -229,22 +229,22 @@ bool CrazyswarmPlatform::ownSendCommand()
     switch (platform_control_mode.control_mode) {
       case as2_msgs::msg::ControlMode::SPEED: {
           crazyflie_interfaces::msg::VelocityWorld msg;
-          msg.header.stamp    = this->get_clock()->now();
-          msg.vel.x           = this->command_twist_msg_.twist.linear.x;
-          msg.vel.y           = this->command_twist_msg_.twist.linear.y;
-          msg.vel.z           = this->command_twist_msg_.twist.linear.z;
+          msg.header.stamp = this->get_clock()->now();
+          msg.vel.x = this->command_twist_msg_.twist.linear.x;
+          msg.vel.y = this->command_twist_msg_.twist.linear.y;
+          msg.vel.z = this->command_twist_msg_.twist.linear.z;
           // Crazyswarm2 handles firmware yaw convention internally; pass ROS CCW-positive directly
-          msg.yaw_rate        = this->command_twist_msg_.twist.angular.z;
+          msg.yaw_rate = this->command_twist_msg_.twist.angular.z;
           cmd_velocity_world_pub_->publish(msg);
         } break;
 
       case as2_msgs::msg::ControlMode::SPEED_IN_A_PLANE: {
           crazyflie_interfaces::msg::Hover msg;
           msg.header.stamp = this->get_clock()->now();
-          msg.vx           = this->command_twist_msg_.twist.linear.x;
-          msg.vy           = this->command_twist_msg_.twist.linear.y;
-          msg.yaw_rate     = this->command_twist_msg_.twist.angular.z;
-          msg.z_distance   = this->command_pose_msg_.pose.position.z;
+          msg.vx = this->command_twist_msg_.twist.linear.x;
+          msg.vy = this->command_twist_msg_.twist.linear.y;
+          msg.yaw_rate = this->command_twist_msg_.twist.angular.z;
+          msg.z_distance = this->command_pose_msg_.pose.position.z;
           cmd_hover_pub_->publish(msg);
           RCLCPP_DEBUG(this->get_logger(), "Hover set to z: %f", msg.z_distance);
         } break;
@@ -260,10 +260,10 @@ bool CrazyswarmPlatform::ownSendCommand()
     const auto eulerAngles = this->quaternion2Euler(this->command_pose_msg_.pose.orientation);
     crazyflie_interfaces::msg::Position msg;
     msg.header.stamp = this->get_clock()->now();
-    msg.x            = this->command_pose_msg_.pose.position.x;
-    msg.y            = this->command_pose_msg_.pose.position.y;
-    msg.z            = this->command_pose_msg_.pose.position.z;
-    msg.yaw          = static_cast<float>(eulerAngles[2] / 3.1416 * 180.0);
+    msg.x = this->command_pose_msg_.pose.position.x;
+    msg.y = this->command_pose_msg_.pose.position.y;
+    msg.z = this->command_pose_msg_.pose.position.z;
+    msg.yaw = static_cast<float>(eulerAngles[2] / 3.1416 * 180.0);
     cmd_position_pub_->publish(msg);
     static rclcpp::Clock pos_clk;
     RCLCPP_INFO_THROTTLE(

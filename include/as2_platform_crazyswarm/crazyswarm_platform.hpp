@@ -92,7 +92,7 @@ private:
   std::string cf_name_;  // Crazyswarm2 drone name (e.g. "cf1"), replaces uri_
 
   bool is_connected_ = false;
-  bool is_armed_     = false;
+  bool is_armed_ = false;
   bool enable_multiranger_ = false;
   double connection_timeout_ = 1.0;
 
@@ -101,29 +101,29 @@ private:
 
   /*  --  CRAZYSWARM2 PUBLISHERS --  */
 
-  rclcpp::Publisher<crazyflie_interfaces::msg::Position>::SharedPtr      cmd_position_pub_;
+  rclcpp::Publisher<crazyflie_interfaces::msg::Position>::SharedPtr cmd_position_pub_;
   rclcpp::Publisher<crazyflie_interfaces::msg::VelocityWorld>::SharedPtr cmd_velocity_world_pub_;
-  rclcpp::Publisher<crazyflie_interfaces::msg::Hover>::SharedPtr         cmd_hover_pub_;
+  rclcpp::Publisher<crazyflie_interfaces::msg::Hover>::SharedPtr cmd_hover_pub_;
 
   /*  --  CRAZYSWARM2 SERVICE CLIENTS --  */
 
-  rclcpp::Client<std_srvs::srv::Empty>::SharedPtr                           emergency_client_;
+  rclcpp::Client<std_srvs::srv::Empty>::SharedPtr emergency_client_;
   rclcpp::Client<crazyflie_interfaces::srv::NotifySetpointsStop>::SharedPtr notify_stop_client_;
-  rclcpp::Client<crazyflie_interfaces::srv::Arm>::SharedPtr                 arm_client_;
+  rclcpp::Client<crazyflie_interfaces::srv::Arm>::SharedPtr arm_client_;
 
   /*  --  CRAZYSWARM2 SUBSCRIPTIONS --  */
 
-  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr                    odom_sub_;
-  rclcpp::Subscription<crazyflie_interfaces::msg::Status>::SharedPtr         status_sub_;
-  rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr               scan_sub_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
+  rclcpp::Subscription<crazyflie_interfaces::msg::Status>::SharedPtr status_sub_;
+  rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;
   rclcpp::Subscription<crazyflie_interfaces::msg::LogDataGeneric>::SharedPtr imu_sub_;
 
   /*  --  SENSORS --  */
 
-  std::unique_ptr<as2::sensors::Imu>                                    imu_sensor_ptr_;
-  std::unique_ptr<as2::sensors::Sensor<nav_msgs::msg::Odometry>>        odom_estimate_ptr_;
+  std::unique_ptr<as2::sensors::Imu> imu_sensor_ptr_;
+  std::unique_ptr<as2::sensors::Sensor<nav_msgs::msg::Odometry>> odom_estimate_ptr_;
   std::unique_ptr<as2::sensors::Sensor<sensor_msgs::msg::BatteryState>> battery_sensor_ptr_;
-  std::unique_ptr<as2::sensors::Sensor<sensor_msgs::msg::LaserScan>>    multi_ranger_sensor_ptr_;
+  std::unique_ptr<as2::sensors::Sensor<sensor_msgs::msg::LaserScan>> multi_ranger_sensor_ptr_;
 };
 
 #endif  // AS2_PLATFORM_CRAZYSWARM__CRAZYSWARM_PLATFORM_HPP_
