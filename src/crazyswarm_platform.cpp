@@ -38,8 +38,7 @@ void CrazyswarmPlatform::configureParams()
   if (!default_cf_name.empty() && default_cf_name[0] == '/') {
     default_cf_name = default_cf_name.substr(1);
   }
-  this->declare_parameter<std::string>("cf_name", default_cf_name);
-  this->get_parameter("cf_name", cf_name_);
+  cf_name_ = this->getParameter<std::string>("cf_name", default_cf_name);
 }
 
 void CrazyswarmPlatform::init()
@@ -48,11 +47,8 @@ void CrazyswarmPlatform::init()
   odom_frame_ = as2::tf::generateTfName(this, "odom");
 
   /*    PARAMETERS    */
-  this->declare_parameter<bool>("multi_ranger_deck", false);
-  this->get_parameter("multi_ranger_deck", enable_multiranger_);
-
-  this->declare_parameter<double>("connection_timeout", 1.0);
-  this->get_parameter("connection_timeout", connection_timeout_);
+  enable_multiranger_ = this->getParameter<bool>("multi_ranger_deck", false);
+  connection_timeout_ = this->getParameter<double>("connection_timeout", 1.0);
 
   configureSensors();
 
