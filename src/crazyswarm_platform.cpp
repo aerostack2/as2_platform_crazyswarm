@@ -100,14 +100,14 @@ void CrazyswarmPlatform::init()
 }
 
 CrazyswarmPlatform::CrazyswarmPlatform()
-: as2::AerialPlatform(), tf_handler_(this)
+: as2::AerialPlatform()
 {
   configureParams();
   init();
 }
 
 CrazyswarmPlatform::CrazyswarmPlatform(const std::string & ns)
-: as2::AerialPlatform(ns), tf_handler_(this)
+: as2::AerialPlatform(ns)
 {
   configureParams();
   init();
@@ -115,7 +115,7 @@ CrazyswarmPlatform::CrazyswarmPlatform(const std::string & ns)
 
 CrazyswarmPlatform::CrazyswarmPlatform(
   const std::string & ns, const rclcpp::NodeOptions & options)
-: as2::AerialPlatform(ns, options), tf_handler_(this)
+: as2::AerialPlatform(ns, options)
 {
   configureParams();
   init();
@@ -219,7 +219,6 @@ bool CrazyswarmPlatform::ownSendCommand()
   as2_msgs::msg::ControlMode platform_control_mode = this->getControlMode();
 
   if (platform_control_mode.yaw_mode == as2_msgs::msg::ControlMode::YAW_SPEED &&
-    platform_control_mode.reference_frame == as2_msgs::msg::ControlMode::LOCAL_ENU_FRAME &&
     this->getArmingState() && is_connected_)
   {
     switch (platform_control_mode.control_mode) {
@@ -305,9 +304,11 @@ bool CrazyswarmPlatform::ownSetOffboardControl(bool offboard) {return is_connect
 
 bool CrazyswarmPlatform::ownSetPlatformControlMode(const as2_msgs::msg::ControlMode & msg)
 {
-  if (msg.yaw_mode == as2_msgs::msg::ControlMode::YAW_SPEED &&
-    msg.reference_frame == as2_msgs::msg::ControlMode::LOCAL_ENU_FRAME)
-  {
+  // The crazyswarm2 setpoints are expressed in the local reference frame
+  setCommandPoseFrameId(odom_frame_);
+  setCommandTwistFrameId(odom_frame_);
+
+  if (msg.yaw_mode == as2_msgs::msg::ControlMode::YAW_SPEED) {
     switch (msg.control_mode) {
       case as2_msgs::msg::ControlMode::SPEED:
         RCLCPP_DEBUG(this->get_logger(), "SPEED ENABLED");
