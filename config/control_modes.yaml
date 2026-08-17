@@ -9,7 +9,7 @@
 # ─────────────────    ───────────────    ─────────────────────
 # 0b0000  UNSET        0b00  YAW_ANGLE    0b00  LOCAL_ENU
 # 0b0001  HOVER        0b01  YAW_SPEED    0b01  GLOBAL_ENU
-# 0b0010  ACRO                            0b10  GLOBAL_LLA
+# 0b0010  BODY_RATES                      0b10  GLOBAL_LLA
 # 0b0011  ATTITUDE
 # 0b0100  SPEED
 # 0b0101  SPEED_IN_A_PLANE
