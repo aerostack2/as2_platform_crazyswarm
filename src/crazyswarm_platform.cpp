@@ -43,8 +43,8 @@ void CrazyswarmPlatform::configureParams()
 
 void CrazyswarmPlatform::init()
 {
-  base_frame_ = as2::tf::generateTfName(this, "base_link");
-  odom_frame_ = as2::tf::generateTfName(this, "odom");
+  base_frame_ = this->getBaseFrameId();
+  odom_frame_ = this->getOdomFrameId();
 
   /*    PARAMETERS    */
   enable_multiranger_ = this->getParameter<bool>("multi_ranger_deck", false);
