@@ -59,29 +59,102 @@ class CrazyswarmPlatform : public as2::AerialPlatform
   std::string odom_frame_;
 
 public:
+  /**
+   * @brief Create the publishers, subscriptions, service clients and timers
+   * that bridge this platform with the Crazyswarm2 server.
+   */
   void init();
+
+  /**
+   * @brief Construct the Crazyswarm platform with the default namespace.
+   */
   CrazyswarmPlatform();
+
+  /**
+   * @brief Construct the Crazyswarm platform in a given namespace.
+   *
+   * @param ns Namespace of the drone.
+   */
   explicit CrazyswarmPlatform(const std::string & ns);
+
+  /**
+   * @brief Construct the Crazyswarm platform in a given namespace, with node options.
+   *
+   * @param ns Namespace of the drone.
+   * @param options Node options.
+   */
   CrazyswarmPlatform(const std::string & ns, const rclcpp::NodeOptions & options);
+
+  /**
+   * @brief Declare and read the platform parameters.
+   */
   void configureParams();
 
   /*  --  AS2 FUNCTIONS --  */
 
   void configureSensors() override;
 
+  /**
+   * @brief Arm or disarm the vehicle.
+   *
+   * @param state True to arm, false to disarm.
+   * @return true if the vehicle accepted the request.
+   */
   bool ownSetArmingState(bool state) override;
+  /**
+   * @brief Enter or leave offboard control.
+   *
+   * @param offboard True to take control, false to release it.
+   * @return true if the vehicle accepted the request.
+   */
   bool ownSetOffboardControl(bool offboard) override;
+  /**
+   * @brief Accept a control mode requested through the platform interface.
+   *
+   * @param msg Requested control mode.
+   * @return true if the platform accepts the mode.
+   */
   bool ownSetPlatformControlMode(const as2_msgs::msg::ControlMode & msg) override;
+  /**
+   * @brief Send the current actuator commands to the vehicle.
+   *
+   * @return true if the command was sent.
+   */
   bool ownSendCommand() override;
+  /**
+   * @brief Stop the motors immediately, without landing.
+   */
   void ownKillSwitch() override;
+  /**
+   * @brief Hold the vehicle in place with a zero setpoint.
+   */
   void ownStopPlatform() override;
 
   /*  --  CRAZYSWARM2 CALLBACKS --  */
 
   void odomCB(const nav_msgs::msg::Odometry::SharedPtr msg);
+  /**
+   * @brief Store the vehicle status reported by the Crazyswarm2 server.
+   *
+   * @param msg Status message.
+   */
   void statusCB(const crazyflie_interfaces::msg::Status::SharedPtr msg);
+  /**
+   * @brief Republish the multiranger scan as an aerostack2 sensor stream.
+   *
+   * @param msg Laser scan of the multiranger deck.
+   */
   void scanCB(const sensor_msgs::msg::LaserScan::SharedPtr msg);
+  /**
+   * @brief Republish a generic log packet as the platform IMU measurement.
+   *
+   * @param msg Log packet carrying the IMU values.
+   */
   void imuCB(const crazyflie_interfaces::msg::LogDataGeneric::SharedPtr msg);
+  /**
+   * @brief Check that the Crazyswarm2 server is still alive, and report the
+   * platform as disconnected when it is not.
+   */
   void connectionCheckCB();
 
   /*  --  AUX FUNCTIONS --  */
